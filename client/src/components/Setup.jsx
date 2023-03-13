@@ -4,11 +4,11 @@ function Setup() {
     <>
       <h2>Preparation</h2>
 
-  
+      <details>
         <summary>Install</summary>
         <p>Install Truffle and Ganache globally.</p>
         <code>$ npm install -g truffle ganache</code>
-
+      </details>
 
       <details>
         <summary>Ganache and MetaMask</summary>
