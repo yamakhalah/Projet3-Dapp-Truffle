@@ -26,7 +26,7 @@ function EthProvider({ children }) {
         });
       }
     }, []);
-
+//ARTIFACT
   useEffect(() => {
     const tryInit = async () => {
       try {
