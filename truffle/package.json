@@ -6,9 +6,6 @@
     "test": "truffle test"
   },
   "dependencies": {
-    "@emotion/react": "^11.10.6",
-    "@emotion/styled": "^11.10.6",
-    "@mui/material": "^5.11.12",
     "@openzeppelin/contracts": "^4.8.2",
     "@openzeppelin/test-helpers": "^0.5.16",
     "@truffle/hdwallet-provider": "^2.1.8",
