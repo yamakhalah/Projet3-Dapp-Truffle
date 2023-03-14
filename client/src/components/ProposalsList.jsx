@@ -5,7 +5,9 @@ import { Box } from '@mui/material'
 function ProposalsList({ proposals }) {
 
     return (
-        <Box>Proposals List</Box>
+        <Box>
+            Proposal List
+        </Box>
     )
 }
 

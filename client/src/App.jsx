@@ -21,14 +21,15 @@ function App() {
 
   return (
     <EthProvider>
+        {console.log('AFTER ETH PROVIDER')}
       <div id="App">
-        <div className="container">
+          <div className="container">
             <Winner winner={winner} currentStep={currentStep}/>
             <Admin currentStep={currentStep} setCurrentStep={setCurrentStep} steps={steps}/>
             <ProposalsList proposals={{proposals}}/>
             <Voter proposals={proposals} setProposals={setProposals} currentStep={currentStep} setWinner={setWinner}/>
             <VotersList />
-        </div>
+          </div>
       </div>
     </EthProvider>
   );

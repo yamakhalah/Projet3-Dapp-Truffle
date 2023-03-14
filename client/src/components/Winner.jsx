@@ -2,9 +2,13 @@ import { useState, useEffect } from "react"
 import { useEth } from '../contexts/EthContext'
 import { Box } from '@mui/material'
 
-function Winner({ winner, currentPhase }) {
+function Winner({ winner, currentStep }) {
 
-    return (winner !== null && currentPhase >= 4) &&(
+    useEffect(() => {
+
+    }, [winner, currentStep])
+
+    return (winner !== null && currentStep >= 4) &&(
         <Box>Winner box</Box>
     )
 }
