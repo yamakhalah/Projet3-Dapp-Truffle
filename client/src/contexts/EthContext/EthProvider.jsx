@@ -8,6 +8,7 @@ function EthProvider({ children }) {
 
   const init = useCallback(
     async artifact => {
+      console.log(artifact);
       if (artifact) {
         const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
         const accounts = await web3.eth.requestAccounts();
@@ -17,6 +18,8 @@ function EthProvider({ children }) {
         try {
           address = artifact.networks[networkID].address;
           contract = new web3.eth.Contract(abi, address);
+          console.log('CONTRACT INIT')
+          console.log(contract);
         } catch (err) {
           console.error(err);
         }
