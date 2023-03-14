@@ -6,11 +6,7 @@ function ProposalsList({ proposals }) {
 
     return (
         <Box>
-            <div>
-                {proposals.forEach(proposal => {
-                    <div></div>
-                })}
-            </div>
+            Proposal List
         </Box>
     )
 }

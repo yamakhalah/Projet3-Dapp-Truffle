@@ -6,7 +6,7 @@ class VotingContractService {
 
     static INSTANCE: VotingContractService = null;
 
-    private owner: String;
+    private owner: any;
     private contract: Contract;
     private accounts: Accounts;
 
