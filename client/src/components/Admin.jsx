@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react"
 import { useEth } from '../contexts/EthContext'
 import { Container, Box, Typography, TextField, Button, Grid } from '@mui/material'
+import VotingContractService from "../services/VotingContractService.ts";
+
 
 function Admin({ currentStep, setCurrentStep, steps }) {
     const {
@@ -8,18 +10,20 @@ function Admin({ currentStep, setCurrentStep, steps }) {
     } = useEth();
     const [isOwner, setIsOwner]  = useState(false)
     const [formValue, setFormValue] = useState("");
+    const [votingContractService, setVotingContractService] = useState(null);
 
     useEffect(() => {
-        console.log('STEPS', steps)
+        const votingContractService = VotingContractService.getInstance(accounts, contract)
+        setVotingContractService(votingContractService);
         async function getStep() {
             if(artifact) {
-                const step = await contract.methods.workflowStatus().call({ from: accounts[0] });
+                const step = await votingContractService.getStep();
                 setCurrentStep(parseInt(step));
             }
         }
 
         async function getOwner() {
-            const owner = await contract.methods.owner().call({ from: accounts[0]})
+            const owner = await votingContractService.getOwner();
             accounts[0] === owner ? setIsOwner(true) : setIsOwner(false);
         }
 
@@ -31,12 +35,12 @@ function Admin({ currentStep, setCurrentStep, steps }) {
         setFormValue(e.currentTarget.value)
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         if(formValue === "") {
             alert("Address not set")
             return;
         }
-        contract.methods.addVoter(formValue).send({ from: accounts[0] })
+        await contract.methods.addVoter(formValue).send({ from: accounts[0] })
         setFormValue("");
         alert("Adress added");
     }
@@ -44,22 +48,23 @@ function Admin({ currentStep, setCurrentStep, steps }) {
     const handleStepChange = async () => {
         switch(currentStep) {
             case 0:
-                await contract.methods.startProposalsRegistering().send({ from: accounts[0] })
+                await votingContractService.startProposalRegistering();
                 setCurrentStep(1);
                 break;
             case 1:
-                await contract.methods.endProposalsRegistering().send({ from: accounts[0]})
+                await votingContractService.endProposalRegistering()
                 setCurrentStep(2);
                 break;
             case 2:
-                await contract.methods.startVotingSession().send({ from: accounts[0]})
+                await votingContractService.startVotingSession();
                 setCurrentStep(3);
                 break;
             case 3:
-                await contract.methods.endVotingSession().send({ from: accounts[0]})
+                await votingContractService.endVotingSession();
                 setCurrentStep(4);
                 break;
             case 4:
+                await votingContractService.tallyVotes();
                 setCurrentStep(5)
                 break;
             case 5:

@@ -2,26 +2,24 @@ import { useEth } from '../contexts/EthContext';
 import { Contract } from 'web3-eth-contract';
 import { Accounts } from 'web3-eth-accounts'
 
-class VotingContractService {
+export default class VotingContractService {
 
-    static INSTANCE: VotingContractService = null;
+    private static INSTANCE: VotingContractService = null;
 
-    private owner: any;
+    private owner: String;
     private contract: Contract;
-    private accounts: Accounts;
+    private accounts: [String];
 
-    private constructor(accounts, contract) {
+    private constructor(accounts: [String], contract: Contract) {
         this.contract = contract;
         this.accounts = accounts;
     }
 
-    static getInstance(): VotingContractService {
-        const {
-            data: { accounts, contract },
-        } = useEth();
-        //Check if accounts and contract changed.
-
+    static getInstance(accounts: [String], contract: Contract): VotingContractService {
+        if(accounts === null && contract === null) return null;
         if(this.INSTANCE === null) {
+            this.INSTANCE = new VotingContractService(accounts, contract);
+        }else if(this.INSTANCE.accounts[0] !== accounts[0]) {
             this.INSTANCE = new VotingContractService(accounts, contract);
         }
         return this.INSTANCE;
@@ -33,6 +31,42 @@ class VotingContractService {
 
     public async getStep() {
         return await this.contract.methods.workflowStatus().call({ from: this.accounts[0]})
+    }
+
+    public async getOneProposal(id: Number) {
+        return await this.contract.methods.getOneProposal(id).call({ from: this.accounts[0]})
+    }
+
+    public async addVoter(voter: String) {
+        await this.contract.methods.addVoter(voter).send({ from: this.accounts[0] })
+    }
+
+    public async addProposal(description: String) {
+        await this.contract.methods.addProposal(description).send({ from: this.accounts[0] })
+    }
+
+    public async setVote(id: Number) {
+        await this.contract.methods.setVote(id).send({ from: this.accounts[0] })
+    }
+
+    public async startProposalRegistering() {
+        await this.contract.methods.startProposalRegistering().send({ from: this.accounts[0] })
+    }
+
+    public async endProposalRegistering() {
+        await this.contract.methods.endProposalRegistering().send({ from: this.accounts[0] })
+    }
+
+    public async startVotingSession() {
+        await this.contract.methods.startVotingSession().send({ from: this.accounts[0] })
+    }
+
+    public async endVotingSession() {
+        await this.contract.methods.endVotingSession().send({ from: this.accounts[0] })
+    }
+
+    public async tallyVotes() {
+        await this.contract.methods.tallyVotes().send({ from: this.accounts[0] })
     }
 
 }
