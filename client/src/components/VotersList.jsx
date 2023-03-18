@@ -1,11 +1,47 @@
 import { useState, useEffect } from "react"
 import { useEth } from '../contexts/EthContext'
-import { Box } from '@mui/material'
+import { Box, Grid, List, ListItem, Typography, ListItemText } from '@mui/material'
+import { VotingContractService, EventName } from '../services/VotingContractService.ts'
 
-function VotersList({ }) {
+function VotersList() {
+    const {
+        state: { accounts, contract, artifact },
+    } = useEth();
+    const [voters, setVoters] = useState([]);
+
+    useEffect(() => {
+        async function init() {
+            if (artifact) {
+                const event = await VotingContractService.getInstance(accounts, contract).getPastEvents(EventName.VoterRegistered);
+                let voters = event.map((voter) => voter.returnValues.voterAddress);
+                setVoters(voters)
+            }
+        }
+        init();
+    }, [accounts, contract, artifact])
+
 
     return (
-        <Box>Proposals List</Box>
+        <Box>
+            <Grid container spacing={2}>
+                <Grid item xs={12} md={6}>
+                    <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">
+                        Voters List
+                    </Typography>
+                        <List>
+                            {voters.map((voter) => {
+                                return (
+                                    <ListItem key={voter}>
+                                        <ListItemText
+                                            primary={voter}
+                                        />
+                                    </ListItem>
+                                )
+                            })}
+                        </List>
+                </Grid>
+            </Grid>
+        </Box>
     )
 }
 

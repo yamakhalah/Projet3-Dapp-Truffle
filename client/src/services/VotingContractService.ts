@@ -1,8 +1,13 @@
-import { useEth } from '../contexts/EthContext';
 import { Contract } from 'web3-eth-contract';
-import { Accounts } from 'web3-eth-accounts'
 
-export default class VotingContractService {
+export enum EventName {
+    VoterRegistered = "VoterRegistered",
+    WorkflowStatusChange = "WorkflowStatusChange",
+    ProposalRegistered = "ProposalRegistered",
+    Voted = "Voted"
+}
+
+export class VotingContractService {
 
     private static INSTANCE: VotingContractService = null;
 
@@ -22,6 +27,7 @@ export default class VotingContractService {
         }else if(this.INSTANCE.accounts[0] !== accounts[0]) {
             this.INSTANCE = new VotingContractService(accounts, contract);
         }
+        console.log('INSTANCE', this.INSTANCE)
         return this.INSTANCE;
     }
 
@@ -67,6 +73,13 @@ export default class VotingContractService {
 
     public async tallyVotes() {
         await this.contract.methods.tallyVotes().send({ from: this.accounts[0] })
+    }
+
+    public async getPastEvents(eventName: EventName) {
+       const test = await this.contract.getPastEvents(eventName as string, { fromBlock: 0, toBlock: "latest"});
+       console.log('PAST EVENT RESULT FOR '+eventName, test);
+        return test;
+
     }
 
 }

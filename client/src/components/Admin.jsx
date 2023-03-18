@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { useEth } from '../contexts/EthContext'
 import { Container, Box, Typography, TextField, Button, Grid } from '@mui/material'
-import VotingContractService from "../services/VotingContractService.ts";
+import { VotingContractService } from "../services/VotingContractService.ts";
 
 
 function Admin({ currentStep, setCurrentStep, steps }) {
@@ -36,13 +36,16 @@ function Admin({ currentStep, setCurrentStep, steps }) {
     }
 
     const handleSubmit = async (e) => {
+        e.preventDefault();
         if(formValue === "") {
             alert("Address not set")
             return;
         }
+        console.log('ADD ADDRESS', formValue)
         await contract.methods.addVoter(formValue).send({ from: accounts[0] })
         setFormValue("");
         alert("Adress added");
+        window.location.reload();
     }
 
     const handleStepChange = async () => {
