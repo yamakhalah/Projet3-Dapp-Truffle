@@ -43,6 +43,10 @@ export class VotingContractService {
         return await this.contract.methods.getOneProposal(id).call({ from: this.accounts[0]})
     }
 
+    public async getVoter(address: String) {
+        await this.contract.methods.getVoter(address).call({ from: this.accounts[0]})
+    }
+
     public async addVoter(voter: String) {
         await this.contract.methods.addVoter(voter).send({ from: this.accounts[0] })
     }

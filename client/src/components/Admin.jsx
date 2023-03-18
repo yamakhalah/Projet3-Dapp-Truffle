@@ -41,9 +41,7 @@ function Admin({ currentStep, setCurrentStep, steps }) {
             alert("Address not set")
             return;
         }
-        console.log('ADD ADDRESS', formValue)
-        await contract.methods.addVoter(formValue).send({ from: accounts[0] })
-        setFormValue("");
+        await votingContractService.addVoter(formValue);
         alert("Adress added");
         window.location.reload();
     }
