@@ -1,29 +1,35 @@
 import { useState, useEffect } from "react"
 import { useEth } from '../contexts/EthContext'
-import {Box, Typography} from '@mui/material'
+import {Box, Button, Container, FormControlLabel, Radio, TextField, FormControl, RadioGroup, Typography } from '@mui/material'
+import Grid from '@mui/material/Unstable_Grid2'
 import { EventName, VotingContractService } from '../services/VotingContractService.ts'
 
-function Voter({ propsProposals, setPropsProposals, currentPhase, setWinner }) {
+function Voter({ propsProposals, setPropsProposals, currentStep, setWinner }) {
     const {
         state: { accounts, contract, artifact },
     } = useEth();
-    const[formValue, setFormValue] = UseState("")
-    const[proposals, setProposals] = UseState([])
-    const[selectedProposal, setSelectedProposal] = UseState(null)
-    const[hasVoted, setHasVoted] = UseState(true);
-    const[isVoter, setIsVoter] = UseState(false);
-    const[service, setService] = UseState(null)
+    const[formValue, setFormValue] = useState("")
+    const[proposals, setProposals] = useState([])
+    const[selectedProposal, setSelectedProposal] = useState(null)
+    const[hasVoted, setHasVoted] = useState(true);
+    const[isVoter, setIsVoter] = useState(false);
+    const[service, setService] = useState(null)
 
     useEffect(() => {
-        const contractService = VotingContractService.getInstance(accounts, contract)
-        setService(contractService);
+        console.log('CURRENT STEP', currentStep)
+        const service = VotingContractService.getInstance(accounts, contract)
+        setService(service);
         async function init() {
+            console.log('SERVICE', service)
             if(artifact) {
                 let voters = await service.getPastEvents(EventName.VoterRegistered);
+                console.log('FETCH VOTERS', voters)
                 const voter = voters.find((voter) => voter.returnValues.voterAddress === accounts[0])
+                console.log('VOTER', voter)
                 if (voter) {
                     setIsVoter(true)
                     const data = await service.getVoter(voter.returnValues.voterAddress);
+                    console.log('VOTER DATA', data)
                     setHasVoted(data.hasVoted);
                 }
             }
@@ -46,7 +52,7 @@ function Voter({ propsProposals, setPropsProposals, currentPhase, setWinner }) {
 
         }
         init();
-    }, [accounts, contract, artifact])
+    }, [currentStep, accounts, contract, artifact])
 
     const handleAddProposal = async (e) => {
         e.preventDefault();
@@ -65,29 +71,90 @@ function Voter({ propsProposals, setPropsProposals, currentPhase, setWinner }) {
         window.location.reload();
     }
 
-    const handleSwitchProposal = async (e, data) => {
-        setSelectedProposal(data.value);
+    const handleSwitchProposal = async (e) => {
+        setSelectedProposal(e.currentTarget.value);
+    }
+
+    const handleChangeDescription = async (e) => {
+        setFormValue(e.currentTarget.value);
     }
     return (
-        <Box>
-            <Typography variant="h2" component="div">
-                Voter pannel
-            </Typography>
-        isVoter && {
-            <Box>
-            {currentPhase === 1 && (
-                <Typography variant="h4" component="div">
-                    Add Proposal
+        <Grid container spacing={2}>
+            <Grid item md={12}>
+                <Typography variant="h1" component="div">
+                    Voter Pannel
                 </Typography>
+            </Grid>
+            {isVoter && (
+                <Container maxWidth='xl'>
+                    {currentStep === 1 && (
+                        <Grid item md={6}>
+                            <Box component="form" onSubmit={handleVote} noValidate>
+                                <Typography variant="h2" component="h3" align="center">
+                                    Add Proposal
+                                </Typography>
+                                <Grid item md={12}>
+                                    <TextField
+                                        margin="normal"
+                                        required
+                                        fullWidth
+                                        id="proposal"
+                                        label="Proposal ID"
+                                        name="proposal"
+                                        autoFocus
+                                        onChange={handleChangeDescription}
+                                    />
+                                </Grid>
+                                <Grid item md={12}>
+                                    <Button
+                                        type="submit"
+                                        fullWidth
+                                        variant="contained"
+                                        sx={{ mt: 3, mb: 2 }}
+                                    >
+                                        Add Proposal
+                                    </Button>
+                                </Grid>
+                            </Box>
+                        </Grid>
+                    )}
+                    {(currentStep === 3 && !hasVoted) && (
+                        <Grid item md={6}>
+                            <Box component="form" onSubmit={handleAddProposal} noValidate>
+                                <Typography variant="h2" component="h3" align="center">
+                                    Vote for proposal
+                                </Typography>
+                                <Grid item md={12}>
+                                    <FormControl>
+                                        <RadioGroup
+                                            aria-labelledby="proposals"
+                                            defaultValue="1"
+                                            name="proposals"
+                                            value={selectedProposal}
+                                            onChange={handleSwitchProposal}
+                                        >
+                                            {proposals.map((proposal) => {
+                                                <FormControlLabel key={proposal.id} control={<Radio />} label={proposal.id} value={proposal.description} />
+                                            })}
+                                        </RadioGroup>
+                                    </FormControl>
+                                </Grid>
+                                <Grid item md={12}>
+                                    <Button
+                                        type="submit"
+                                        fullWidth
+                                        variant="contained"
+                                        sx={{ mt: 3, mb: 2 }}
+                                    >
+                                        Add Proposal
+                                    </Button>
+                                </Grid>
+                            </Box>
+                        </Grid>
+                    )}
+                </Container>
             )}
-            {(currentPhase === 3 && !hasVoted) && (
-                <Typography variant="h4" component="div">
-                    Vote for proposal
-                </Typography>
-            )}
-            </Box>
-        }
-        </Box>
+        </Grid>
     )
 }
 

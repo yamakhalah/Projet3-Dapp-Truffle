@@ -44,7 +44,7 @@ export class VotingContractService {
     }
 
     public async getVoter(address: String) {
-        await this.contract.methods.getVoter(address).call({ from: this.accounts[0]})
+        return await this.contract.methods.getVoter(address).call({ from: this.accounts[0]})
     }
 
     public async addVoter(voter: String) {
@@ -59,12 +59,12 @@ export class VotingContractService {
         await this.contract.methods.setVote(id).send({ from: this.accounts[0] })
     }
 
-    public async startProposalRegistering() {
-        await this.contract.methods.startProposalRegistering().send({ from: this.accounts[0] })
+    public async startProposalsRegistering() {
+        await this.contract.methods.startProposalsRegistering().send({ from: this.accounts[0] })
     }
 
-    public async endProposalRegistering() {
-        await this.contract.methods.endProposalRegistering().send({ from: this.accounts[0] })
+    public async endProposalsRegistering() {
+        await this.contract.methods.endProposalsRegistering().send({ from: this.accounts[0] })
     }
 
     public async startVotingSession() {

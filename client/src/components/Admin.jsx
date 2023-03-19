@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { useEth } from '../contexts/EthContext'
-import { Container, Box, Typography, TextField, Button, Grid } from '@mui/material'
+import { Container, Box, Typography, TextField, Button } from '@mui/material'
+import Grid from '@mui/material/Unstable_Grid2'
 import { VotingContractService } from "../services/VotingContractService.ts";
 
 
@@ -49,11 +50,11 @@ function Admin({ currentStep, setCurrentStep, steps }) {
     const handleStepChange = async () => {
         switch(currentStep) {
             case 0:
-                await votingContractService.startProposalRegistering();
+                await votingContractService.startProposalsRegistering();
                 setCurrentStep(1);
                 break;
             case 1:
-                await votingContractService.endProposalRegistering()
+                await votingContractService.endProposalsRegistering()
                 setCurrentStep(2);
                 break;
             case 2:
@@ -74,49 +75,59 @@ function Admin({ currentStep, setCurrentStep, steps }) {
             default:
                 break;
         }
+        window.location.reload();
     }
 
     return (
         isOwner && (
-            <Container>
-                <Typography variant="h1" component="h2">
-                    Admin Pannel
-                </Typography>
-                {currentStep === 0 && (
-                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-                        <Typography variant="h2" component="h3">
-                            Add voter
+            <Grid container spacing={2}>
+                <Grid item md={12}>
+                    <Typography variant="h1" component="h2">
+                        Admin Pannel
+                    </Typography>
+                </Grid>
+                <Grid item md={6}>
+                    {currentStep === 0 && (
+                        <Grid item md={6}  mdOffset={3}>
+                            <Box component="form" onSubmit={handleSubmit} noValidate>
+                                <Typography variant="h2" component="h3" align="center">
+                                    Add voter
+                                </Typography>
+                                <Grid item md={12}>
+                                    <TextField
+                                        margin="normal"
+                                        required
+                                        fullWidth
+                                        id="email"
+                                        label="Voter Address"
+                                        name="address"
+                                        autoFocus
+                                        onChange={handleChange}
+                                    />
+                                </Grid>
+                                <Grid item md={12}>
+                                    <Button
+                                        type="submit"
+                                        fullWidth
+                                        variant="contained"
+                                        sx={{ mt: 3, mb: 2 }}
+                                    >
+                                        Add
+                                    </Button>
+                                </Grid>
+                            </Box>
+                        </Grid>
+                    )}
+                </Grid>
+                <Grid item md={6}>
+                        <Typography variant="h2" component="h3" align="center">
+                            Change Workflow Status
                         </Typography>
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="email"
-                            label="Voter Address"
-                            name="address"
-                            autoFocus
-                            onChange={handleChange}
-                        />
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
-                        >
-                            Add
-                        </Button>
-
-                    </Box>
-                )}
-                <Typography variant="h2" component="h3">
-                    Change Workflow Status
-                </Typography>
-                <Grid container>
                     {steps.map((step, index) => {
                         if(index === currentStep +1) {
                             return (
-                                <Grid item key={step} xs={6}>
-                                    <Button variant="contained" size="medium" onClick={handleStepChange}>
+                                <Grid item key={step} md={6} mdOffset={3}>
+                                    <Button variant="contained" size="large" onClick={handleStepChange} fullWidth>
                                         {step}
                                     </Button>
                                 </Grid>
@@ -124,7 +135,7 @@ function Admin({ currentStep, setCurrentStep, steps }) {
                         }
                     })}
                 </Grid>
-            </Container>
+            </Grid>
         )
     )
 }
