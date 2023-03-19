@@ -22,26 +22,27 @@ function VotersList() {
 
 
     return (
-        <Box>
-            <Grid container spacing={2}>
-                <Grid item xs={12} md={6}>
-                    <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">
-                        Voters List
-                    </Typography>
-                        <List>
-                            {voters.map((voter) => {
-                                return (
-                                    <ListItem key={voter}>
-                                        <ListItemText
-                                            primary={voter}
-                                        />
-                                    </ListItem>
-                                )
-                            })}
-                        </List>
-                </Grid>
+        <Grid container spacing={2}>
+            <Grid item md={12}>
+                <Typography variant="h1" component="div">
+                    Voters List
+                </Typography>
             </Grid>
-        </Box>
+            <Grid item md={6} mdOffset={3}>
+                <List>
+                    {voters.map((voter) => {
+                        return (
+                            <ListItem key={voter}>
+                                <ListItemText
+                                    primaryTypographyProps={{fontSize: '18px'}}
+                                    primary={voter}
+                                />
+                            </ListItem>
+                        )
+                    })}
+                </List>
+            </Grid>
+        </Grid>
     )
 }
 
