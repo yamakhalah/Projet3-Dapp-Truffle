@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useEth } from '../contexts/EthContext'
-import { Container, Box, Typography, TextField, Button } from '@mui/material'
+import { Box, Typography, TextField, Button } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
 import { VotingContractService } from "../services/VotingContractService.ts";
 import { useStyles } from "../theme";
@@ -88,8 +88,8 @@ function Admin({ currentStep, setCurrentStep, steps }) {
                         Admin Pannel
                     </Typography>
                 </Grid>
-                <Grid item md={6} className={classes.gridItem}>
-                    {currentStep === 0 && (
+                {currentStep === 0 && (
+                    <Grid item md={6} className={classes.gridItem}>
                         <Grid item md={6}  mdOffset={3}>
                             <Box component="form" onSubmit={handleSubmit} noValidate>
                                 <Typography variant="h2" component="h3" align="center">
@@ -119,8 +119,8 @@ function Admin({ currentStep, setCurrentStep, steps }) {
                                 </Grid>
                             </Box>
                         </Grid>
-                    )}
-                </Grid>
+                    </Grid>
+                )}
                 <Grid item md={6} className={classes.gridItem}>
                         <Typography variant="h2" component="h3" align="center">
                             Change Workflow Status
@@ -134,6 +134,8 @@ function Admin({ currentStep, setCurrentStep, steps }) {
                                     </Button>
                                 </Grid>
                             )
+                        }else{
+                            return(<div key={step}/>)
                         }
                     })}
                 </Grid>

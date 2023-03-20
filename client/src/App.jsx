@@ -12,7 +12,6 @@ import { defaultTheme } from "./theme"
 function App() {
   const [currentStep, setCurrentStep] = useState(0);
   const [proposals, setProposals] = useState([]);
-  const [winner, setWinner] = useState(null);
   const steps = [
       "RegisteringVoters",
       "ProposalsRegistrationStarted",
@@ -28,10 +27,10 @@ function App() {
                 <EthProvider>
                     <div id="App">
                         <div className="container">
-                                <Winner winner={winner} currentStep={currentStep}/>
+                                <Winner currentStep={currentStep}/>
                                 <Admin currentStep={currentStep} setCurrentStep={setCurrentStep} steps={steps}/>
                                 <ProposalsList proposals={proposals} setProposals={setProposals}/>
-                                <Voter proposals={proposals} currentStep={currentStep} setWinner={setWinner}/>
+                                <Voter proposals={proposals} currentStep={currentStep}/>
                                 <VotersList />
                         </div>
                     </div>

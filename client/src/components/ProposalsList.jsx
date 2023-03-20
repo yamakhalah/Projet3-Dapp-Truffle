@@ -9,12 +9,10 @@ function ProposalsList({ proposals, setProposals }) {
     const {
         state: { accounts, contract, artifact },
     } = useEth();
-    const[service, setService] = useState(null)
     const [isVoter, setIsVoter] = useState(false)
 
     useEffect(() => {
         const service = VotingContractService.getInstance(accounts, contract)
-        setService(service);
         async function init() {
             if(artifact) {
                 let voters = await service.getPastEvents(EventName.VoterRegistered);
@@ -23,7 +21,7 @@ function ProposalsList({ proposals, setProposals }) {
                     setIsVoter(true)
                     const eProposals = await service.getPastEvents(EventName.ProposalRegistered);
                     const proposalsId = eProposals.map((proposal) => proposal.returnValues.proposalId);
-                    let data = new Array();
+                    let data = [];
                     for(const id of proposalsId) {
                         const proposal = await service.getOneProposal(id);
                         data.push(

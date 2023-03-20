@@ -46,6 +46,10 @@ export class VotingContractService {
         return await this.contract.methods.getVoter(address).call({ from: this.accounts[0]})
     }
 
+    public async getWinner() {
+        return await this.contract.methods.winningProposalID().call({ from: this.accounts[0] })
+    }
+
     public async addVoter(voter: String) {
         await this.contract.methods.addVoter(voter).send({ from: this.accounts[0] })
     }
@@ -79,9 +83,7 @@ export class VotingContractService {
     }
 
     public async getPastEvents(eventName: EventName) {
-       const test = await this.contract.getPastEvents(eventName as string, { fromBlock: 0, toBlock: "latest"});
-        return test;
-
+        return await this.contract.getPastEvents(eventName as string, { fromBlock: 0, toBlock: "latest"})
     }
 
 }
