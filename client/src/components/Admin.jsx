@@ -91,7 +91,7 @@ function Admin({ currentStep, setCurrentStep, steps }) {
                         <Grid item md={6}  mdOffset={3}>
                             <Box component="form" onSubmit={handleSubmit} noValidate>
                                 <Typography variant="h2" component="h3" align="center">
-                                    Add voter
+                                    Ajouter un voter
                                 </Typography>
                                 <Grid item md={12}>
                                     <TextField
@@ -112,7 +112,7 @@ function Admin({ currentStep, setCurrentStep, steps }) {
                                         variant="contained"
                                         sx={{ mt: 3, mb: 2 }}
                                     >
-                                        Add
+                                        Ajouter
                                     </Button>
                                 </Grid>
                             </Box>
