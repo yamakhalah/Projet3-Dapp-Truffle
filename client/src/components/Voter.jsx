@@ -2,9 +2,12 @@ import { useState, useEffect } from "react"
 import { useEth } from '../contexts/EthContext'
 import {Box, Button, Container, FormControlLabel, Radio, TextField, FormControl, RadioGroup, Typography } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
+import { useStyles } from '../theme'
 import { EventName, VotingContractService } from '../services/VotingContractService.ts'
 
+
 function Voter({ propsProposals, setPropsProposals, currentStep, setWinner }) {
+    const classes = useStyles();
     const {
         state: { accounts, contract, artifact },
     } = useEth();
@@ -16,20 +19,15 @@ function Voter({ propsProposals, setPropsProposals, currentStep, setWinner }) {
     const[service, setService] = useState(null)
 
     useEffect(() => {
-        console.log('CURRENT STEP', currentStep)
         const service = VotingContractService.getInstance(accounts, contract)
         setService(service);
         async function init() {
-            console.log('SERVICE', service)
             if(artifact) {
                 let voters = await service.getPastEvents(EventName.VoterRegistered);
-                console.log('FETCH VOTERS', voters)
                 const voter = voters.find((voter) => voter.returnValues.voterAddress === accounts[0])
-                console.log('VOTER', voter)
                 if (voter) {
                     setIsVoter(true)
                     const data = await service.getVoter(voter.returnValues.voterAddress);
-                    console.log('VOTER DATA', data)
                     setHasVoted(data.hasVoted);
                 }
             }
@@ -79,7 +77,7 @@ function Voter({ propsProposals, setPropsProposals, currentStep, setWinner }) {
         setFormValue(e.currentTarget.value);
     }
     return (
-        <Grid container spacing={2}>
+        <Grid container spacing={2} className={classes.gridContainer}>
             <Grid item md={12}>
                 <Typography variant="h1" component="div">
                     Voter Pannel
@@ -88,7 +86,7 @@ function Voter({ propsProposals, setPropsProposals, currentStep, setWinner }) {
             {isVoter && (
                 <Container maxWidth='xl'>
                     {currentStep === 1 && (
-                        <Grid item md={6}>
+                        <Grid item md={6} className={classes.gridItem}>
                             <Box component="form" onSubmit={handleVote} noValidate>
                                 <Typography variant="h2" component="h3" align="center">
                                     Add Proposal
@@ -119,7 +117,7 @@ function Voter({ propsProposals, setPropsProposals, currentStep, setWinner }) {
                         </Grid>
                     )}
                     {(currentStep === 3 && !hasVoted) && (
-                        <Grid item md={6}>
+                        <Grid item md={6} className={classes.gridItem}>
                             <Box component="form" onSubmit={handleAddProposal} noValidate>
                                 <Typography variant="h2" component="h3" align="center">
                                     Vote for proposal
