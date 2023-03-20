@@ -14,6 +14,7 @@ export const useStyles = makeStyles((defaultTheme) =>
         },
         gridItem: {
             backgroundColor: '#1A2027 !important',
+            padding: '50px 0px 50px 0px !important'
         },
     }),
 );

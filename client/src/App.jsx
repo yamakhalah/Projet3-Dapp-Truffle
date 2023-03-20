@@ -30,8 +30,8 @@ function App() {
                         <div className="container">
                                 <Winner winner={winner} currentStep={currentStep}/>
                                 <Admin currentStep={currentStep} setCurrentStep={setCurrentStep} steps={steps}/>
-                                <ProposalsList proposals={{proposals}}/>
-                                <Voter propsProposals={proposals} setPropsProposals={setProposals} currentStep={currentStep} setWinner={setWinner}/>
+                                <ProposalsList proposals={proposals} setProposals={setProposals}/>
+                                <Voter proposals={proposals} currentStep={currentStep} setWinner={setWinner}/>
                                 <VotersList />
                         </div>
                     </div>

@@ -6,13 +6,12 @@ import { useStyles } from '../theme'
 import { EventName, VotingContractService } from '../services/VotingContractService.ts'
 
 
-function Voter({ propsProposals, setPropsProposals, currentStep, setWinner }) {
+function Voter({ proposals, currentStep, setWinner }) {
     const classes = useStyles();
     const {
         state: { accounts, contract, artifact },
     } = useEth();
     const[formValue, setFormValue] = useState("")
-    const[proposals, setProposals] = useState([])
     const[selectedProposal, setSelectedProposal] = useState(null)
     const[hasVoted, setHasVoted] = useState(true);
     const[isVoter, setIsVoter] = useState(false);
@@ -31,26 +30,9 @@ function Voter({ propsProposals, setPropsProposals, currentStep, setWinner }) {
                     setHasVoted(data.hasVoted);
                 }
             }
-
-            if(contract) {
-                const eProposals = await service.getPastEvents(EventName.ProposalRegistered);
-                const proposalsId = eProposals.map((proposal) => proposal.returnValues.proposalId);
-                let data = new Array();
-                for(const id of proposalsId) {
-                    const proposal = await service.getOneProposal(id);
-                    proposal.push(
-                        {
-                            key: id,
-                            description: proposal.description
-                        }
-                    )
-                }
-                setProposals(data);
-            }
-
         }
         init();
-    }, [currentStep, accounts, contract, artifact])
+    }, [currentStep, proposals, accounts, contract, artifact])
 
     const handleAddProposal = async (e) => {
         e.preventDefault();
@@ -77,17 +59,17 @@ function Voter({ propsProposals, setPropsProposals, currentStep, setWinner }) {
         setFormValue(e.currentTarget.value);
     }
     return (
-        <Grid container spacing={2} className={classes.gridContainer}>
-            <Grid item md={12}>
-                <Typography variant="h1" component="div">
-                    Voter Pannel
-                </Typography>
-            </Grid>
-            {isVoter && (
+        isVoter && (
+            <Grid container spacing={2} className={classes.gridContainer}>
+                <Grid item md={12}>
+                    <Typography variant="h1" component="div">
+                        Voter Pannel
+                    </Typography>
+                </Grid>
                 <Container maxWidth='xl'>
                     {currentStep === 1 && (
                         <Grid item md={6} className={classes.gridItem}>
-                            <Box component="form" onSubmit={handleVote} noValidate>
+                            <Box component="form" onSubmit={handleAddProposal} noValidate>
                                 <Typography variant="h2" component="h3" align="center">
                                     Add Proposal
                                 </Typography>
@@ -97,7 +79,7 @@ function Voter({ propsProposals, setPropsProposals, currentStep, setWinner }) {
                                         required
                                         fullWidth
                                         id="proposal"
-                                        label="Proposal ID"
+                                        label="Proposal description"
                                         name="proposal"
                                         autoFocus
                                         onChange={handleChangeDescription}
@@ -118,11 +100,11 @@ function Voter({ propsProposals, setPropsProposals, currentStep, setWinner }) {
                     )}
                     {(currentStep === 3 && !hasVoted) && (
                         <Grid item md={6} className={classes.gridItem}>
-                            <Box component="form" onSubmit={handleAddProposal} noValidate>
+                            <Box component="form" onSubmit={handleVote} noValidate>
                                 <Typography variant="h2" component="h3" align="center">
                                     Vote for proposal
                                 </Typography>
-                                <Grid item md={12}>
+                                <Grid container md={12} justifyContent="center">
                                     <FormControl>
                                         <RadioGroup
                                             aria-labelledby="proposals"
@@ -132,27 +114,34 @@ function Voter({ propsProposals, setPropsProposals, currentStep, setWinner }) {
                                             onChange={handleSwitchProposal}
                                         >
                                             {proposals.map((proposal) => {
-                                                <FormControlLabel key={proposal.id} control={<Radio />} label={proposal.id} value={proposal.description} />
+                                                return(
+                                                    <FormControlLabel key={proposal.key} control={<Radio />} label={proposal.key} value={proposal.key+": "+proposal.description} />
+                                                )
                                             })}
                                         </RadioGroup>
                                     </FormControl>
                                 </Grid>
-                                <Grid item md={12}>
+                                <Grid item md={6} mdOffset={3}>
                                     <Button
                                         type="submit"
                                         fullWidth
                                         variant="contained"
                                         sx={{ mt: 3, mb: 2 }}
                                     >
-                                        Add Proposal
+                                        Vote
                                     </Button>
                                 </Grid>
                             </Box>
                         </Grid>
                     )}
+                    {(currentStep === 3 && hasVoted === true) && (
+                        <Typography variant="h2" component="h3" align="center" className={classes.gridItem}>
+                            You have already voted
+                        </Typography>
+                    )}
                 </Container>
-            )}
-        </Grid>
+            </Grid>
+        )
     )
 }
 

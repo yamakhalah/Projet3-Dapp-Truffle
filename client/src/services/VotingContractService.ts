@@ -27,7 +27,6 @@ export class VotingContractService {
         }else if(this.INSTANCE.accounts[0] !== accounts[0]) {
             this.INSTANCE = new VotingContractService(accounts, contract);
         }
-        console.log('INSTANCE', this.INSTANCE)
         return this.INSTANCE;
     }
 
@@ -81,7 +80,6 @@ export class VotingContractService {
 
     public async getPastEvents(eventName: EventName) {
        const test = await this.contract.getPastEvents(eventName as string, { fromBlock: 0, toBlock: "latest"});
-       console.log('PAST EVENT RESULT FOR '+eventName, test);
         return test;
 
     }

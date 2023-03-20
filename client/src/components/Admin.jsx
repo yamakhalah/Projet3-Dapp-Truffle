@@ -3,9 +3,11 @@ import { useEth } from '../contexts/EthContext'
 import { Container, Box, Typography, TextField, Button } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
 import { VotingContractService } from "../services/VotingContractService.ts";
+import { useStyles } from "../theme";
 
 
 function Admin({ currentStep, setCurrentStep, steps }) {
+    const classes = useStyles();
     const {
         state: { accounts, contract, artifact },
     } = useEth();
@@ -17,10 +19,8 @@ function Admin({ currentStep, setCurrentStep, steps }) {
         const votingContractService = VotingContractService.getInstance(accounts, contract)
         setVotingContractService(votingContractService);
         async function getStep() {
-            if(artifact) {
-                const step = await votingContractService.getStep();
-                setCurrentStep(parseInt(step));
-            }
+            const step = await votingContractService.getStep();
+            setCurrentStep(parseInt(step));
         }
 
         async function getOwner() {
@@ -28,8 +28,10 @@ function Admin({ currentStep, setCurrentStep, steps }) {
             accounts[0] === owner ? setIsOwner(true) : setIsOwner(false);
         }
 
-        getOwner();
-        getStep();
+        if(artifact){
+            getOwner();
+            getStep();
+        }
     }, [currentStep, accounts, contract, artifact])
 
     const handleChange = (e) => {
@@ -80,13 +82,13 @@ function Admin({ currentStep, setCurrentStep, steps }) {
 
     return (
         isOwner && (
-            <Grid container spacing={2}>
+            <Grid container spacing={2} className={classes.gridContainer}>
                 <Grid item md={12}>
                     <Typography variant="h1" component="h2">
                         Admin Pannel
                     </Typography>
                 </Grid>
-                <Grid item md={6}>
+                <Grid item md={6} className={classes.gridItem}>
                     {currentStep === 0 && (
                         <Grid item md={6}  mdOffset={3}>
                             <Box component="form" onSubmit={handleSubmit} noValidate>
@@ -119,7 +121,7 @@ function Admin({ currentStep, setCurrentStep, steps }) {
                         </Grid>
                     )}
                 </Grid>
-                <Grid item md={6}>
+                <Grid item md={6} className={classes.gridItem}>
                         <Typography variant="h2" component="h3" align="center">
                             Change Workflow Status
                         </Typography>
