@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react"
 import { useEth } from '../contexts/EthContext'
-import { Box, Grid, List, ListItem, Typography, ListItemText } from '@mui/material'
+import { List, ListItem, Typography, ListItemText } from '@mui/material'
+import Grid from '@mui/material/Unstable_Grid2'
 import { VotingContractService, EventName } from '../services/VotingContractService.ts'
+import { useStyles } from '../theme'
 
 function VotersList() {
+    const classes = useStyles();
     const {
         state: { accounts, contract, artifact },
     } = useEth();
@@ -22,13 +25,13 @@ function VotersList() {
 
 
     return (
-        <Grid container spacing={2}>
+        <Grid container spacing={2} className={classes.gridContainer}>
             <Grid item md={12}>
                 <Typography variant="h1" component="div">
                     Voters List
                 </Typography>
             </Grid>
-            <Grid item md={6} mdOffset={3}>
+            <Grid item md={6} mdOffset={3} className={classes.gridItem}>
                 <List>
                     {voters.map((voter) => {
                         return (
